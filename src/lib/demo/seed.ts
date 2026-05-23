@@ -1,4 +1,5 @@
 import { db } from '../database/server';
+import { morningBriefingAgent } from '../agents/morningBriefingAgent';
 
 export async function seedDemoData() {
   console.log('Seeding demo data...');
@@ -117,6 +118,18 @@ export async function seedDemoData() {
   });
 
   console.log('Seeded mock passive signals.');
+
+  // 6. Generate morning brief from seeded data so dashboard shows one immediately after reset
+  try {
+    const signal = await db.getPassiveSignals(aino.id);
+    if (signal[0]) {
+      await morningBriefingAgent.generateBrief(aino.id, saara.id, [task1, task2, task3], signal[0]);
+      console.log('Seeded morning brief.');
+    }
+  } catch (err) {
+    console.error('Failed to seed morning brief (non-fatal):', err);
+  }
+
   console.log('Demo database seeded successfully.');
   return { aino, saara, tasks: [task1, task2, task3] };
 }

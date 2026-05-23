@@ -23,10 +23,12 @@ export async function POST(request: Request) {
     const saara = await db.getUserByRole('caregiver');
 
     // Process incoming emails from Mailhog
+    let emailError: string | null = null;
     if (aino && saara) {
       try {
         await emailRetrievalAgent.processEmails(aino.id, saara.id);
-      } catch (err) {
+      } catch (err: any) {
+        emailError = err?.message || 'Email processing failed';
         console.error('Error processing emails:', err);
       }
     }
@@ -92,7 +94,7 @@ export async function POST(request: Request) {
           const lastCallTime = new Date(lastCall.created_at).getTime();
           const timeDiffMins = (Date.now() - lastCallTime) / (60 * 1000);
 
-          if (timeDiffMins >= 5) {
+          if (timeDiffMins >= escalationConfig.retry_delay_minutes) {
             // Trigger voice reminder call (Attempt 2)
             const callOutcome = await voiceReminderAgent.callAino(currentTask, forcedResult, 2);
             processed.push({
@@ -159,7 +161,8 @@ export async function POST(request: Request) {
     return NextResponse.json({
       ok: true,
       processedCount: activeTasks.length,
-      actions: processed
+      actions: processed,
+      ...(emailError ? { emailError } : {})
     });
   } catch (error: any) {
     console.error('Error in overdue task checker:', error);

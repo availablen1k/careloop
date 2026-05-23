@@ -58,7 +58,7 @@ export default function AinoDashboard() {
       const res = await fetch(`/api/tasks/${taskId}/need-help`, { method: 'POST' });
       const data = await res.json();
       if (data.ok) {
-        setMessage({ text: 'We have notified Saara. She will contact you soon.', type: 'error' });
+        setMessage({ text: 'We have notified Saara. She will contact you soon.', type: 'success' });
         fetchTasks();
       } else {
         setMessage({ text: 'Error: ' + data.error, type: 'error' });

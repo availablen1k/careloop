@@ -105,9 +105,10 @@ export const voiceReminderAgent = {
     } else if (callResult.status === 'remind_later') {
       updatedStatus = 'retry_queued';
     } else if (callResult.status === 'no_answer') {
-      updatedStatus = 'no_answer';
+      // Set to retry_queued so the coordinator's fallback logic picks it up on the next cycle
+      updatedStatus = 'retry_queued';
     } else {
-      updatedStatus = 'no_answer';
+      updatedStatus = 'retry_queued';
     }
 
     const updatedTask = await db.updateTask(task.id, {

@@ -12,7 +12,18 @@ export async function GET() {
 
     const allTasks = await db.getTasks(aino.id);
     // Bills are routed to Saara only — exclude Finance tasks from Aino's view
-    const tasks = allTasks.filter(t => t.category !== 'Finance');
+    const filtered = allTasks.filter(t => t.category !== 'Finance');
+
+    const isComplete = (s: string) => s === 'completed' || s === 'resolved';
+
+    // Incomplete tasks first (newest created_at first), completed tasks at bottom
+    const tasks = filtered.sort((a, b) => {
+      const aComplete = isComplete(a.status);
+      const bComplete = isComplete(b.status);
+      if (aComplete !== bComplete) return aComplete ? 1 : -1;
+      return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+    });
+
     return NextResponse.json({ ok: true, tasks });
   } catch (error: any) {
     console.error('Error fetching Aino tasks:', error);

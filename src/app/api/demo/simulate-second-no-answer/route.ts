@@ -6,10 +6,18 @@ import { caregiverAlertAgent } from '@/lib/agents/caregiverAlertAgent';
 export async function POST() {
   try {
     const tasks = await db.getTasks();
-    const medTask = tasks.find(t => t.category === 'Medication');
+    const medTask = tasks.find(t => t.category === 'Medication' && t.created_by === 'caregiver' && t.status !== 'completed')
+      ?? tasks.find(t => t.category === 'Medication' && t.status !== 'completed');
 
     if (!medTask) {
       return NextResponse.json({ ok: false, error: 'Medication task not found' }, { status: 404 });
+    }
+
+    // Guard: Call 1 must have already happened
+    const { query } = await import('@/lib/db');
+    const existingCalls = await query('SELECT * FROM voice_calls WHERE task_id = $1 ORDER BY created_at ASC', [medTask.id]);
+    if (existingCalls.rows.length === 0) {
+      return NextResponse.json({ ok: false, error: 'Run "Call 1: Aino No Answer" first before escalating.' }, { status: 400 });
     }
 
     // Update task to calling_aino

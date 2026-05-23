@@ -4,8 +4,8 @@ import { callGeminiJson } from '../ai/gemini';
 export const emailRetrievalAgent = {
   async processEmails(ainoId: string, saaraId: string): Promise<number> {
     try {
-      // 1. Fetch messages from MailHog
-      const res = await fetch('http://localhost:8025/api/v2/messages');
+      // 1. Fetch messages from MailHog (cache: no-store prevents Next.js from serving stale responses)
+      const res = await fetch('http://localhost:8025/api/v2/messages', { cache: 'no-store' });
       if (!res.ok) {
         throw new Error(`Failed to fetch emails from MailHog: ${res.statusText}`);
       }
@@ -38,7 +38,7 @@ You must respond ONLY with a valid JSON object matching the following structure:
   "action": "send_to_saara" | "create_task" | "ignore",
   "priority": "low" | "medium" | "high",
   "risk_level": "low" | "medium" | "high" | "urgent",
-  "category": "Medication" | "Meal" | "Social Contact" | "Physical Activity" | "Other",
+  "category": "Medication" | "Meal" | "Healthcare" | "Social Contact" | "Physical Activity" | "Other",
   "title": "A short, user-friendly task title or alert title",
   "description": "A description summarizing the email details, sender, and action needed",
   "due_time": "Estimated due time, format 'HH:MM AM' or 'HH:MM PM' (default '12:00 PM' if unknown)",

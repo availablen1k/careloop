@@ -12,9 +12,9 @@ export const simulatedVoiceAdapter = {
     status: VoiceCallResult;
     responseText?: string;
   }> {
-    // If no forced result is given, we can default to 'no_answer' for call checks 
-    // or 'completed' depending on context. Let's default to 'completed' for general cases.
-    const status = input.forcedResult || 'completed';
+    // Default to 'no_answer' so the real auto-flow triggers retry and escalation logic.
+    // Demo simulation buttons always pass a forcedResult explicitly.
+    const status = input.forcedResult || 'no_answer';
     
     let responseText: string | undefined = undefined;
     if (status === 'completed') {

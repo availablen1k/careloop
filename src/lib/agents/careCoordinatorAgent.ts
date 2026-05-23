@@ -2,6 +2,7 @@ import { callGeminiJson } from '../ai/gemini';
 import { db } from '../database/server';
 import { query } from '../db';
 import { safetyEscalationAgent } from './safetyEscalationAgent';
+import { escalationConfig } from '../config/escalation';
 import { Task, PassiveSignal } from '../types';
 
 export interface CoordinatorResponse {
@@ -119,7 +120,7 @@ ${callHistoryText}
         // Check retry delay (5 mins)
         const lastCallTime = new Date(lastCall.created_at).getTime();
         const timeDiffMins = (Date.now() - lastCallTime) / (60 * 1000);
-        if (timeDiffMins >= 5) {
+        if (timeDiffMins >= escalationConfig.retry_delay_minutes) {
           fallbackRisk = signal?.change_level === 'concern' ? 'high' : 'medium';
           fallbackAction = 'trigger_voice_reminder';
           fallbackReason = ['Task is overdue, call 1 failed with no answer, and retry window has elapsed.'];

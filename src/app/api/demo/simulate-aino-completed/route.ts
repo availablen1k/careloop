@@ -4,7 +4,8 @@ import { db } from '@/lib/database/server';
 export async function POST() {
   try {
     const tasks = await db.getTasks();
-    const medTask = tasks.find(t => t.category === 'Medication');
+    const medTask = tasks.find(t => t.category === 'Medication' && t.created_by === 'caregiver' && t.status !== 'completed')
+      ?? tasks.find(t => t.category === 'Medication' && t.status !== 'completed');
 
     if (!medTask) {
       return NextResponse.json({ ok: false, error: 'Medication task not found' }, { status: 404 });

@@ -49,6 +49,12 @@ export default function AgentMonitor() {
 
   useEffect(() => {
     fetchLogs();
+
+    const interval = setInterval(() => {
+      fetchLogs();
+    }, 10000);
+
+    return () => clearInterval(interval);
   }, []);
 
   const toggleExpandLog = (id: string) => {

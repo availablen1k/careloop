@@ -23,7 +23,9 @@ export async function GET() {
     }
 
     // 2. Fetch all related tables
-    const tasks = await db.getTasks(aino.id);
+    const allTasks = await db.getTasks(aino.id);
+    // Finance tasks are already shown as invoice alert cards — exclude from task list
+    const tasks = allTasks.filter(t => t.category !== 'Finance');
     const alerts = await db.getAlerts(saara.id);
     const briefs = await db.getMorningBriefs(saara.id);
     const voiceCalls = await db.getVoiceCalls();

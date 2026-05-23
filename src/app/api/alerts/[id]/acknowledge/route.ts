@@ -26,12 +26,8 @@ export async function POST(
       acknowledged_at: nowStr,
     });
 
-    // 2. If there is an associated task, we can set its status to acknowledged
-    if (alert.task_id) {
-      await db.updateTask(alert.task_id, {
-        status: 'acknowledged',
-      });
-    }
+    // Do not change task status — the coordinator must keep monitoring the task
+    // until Aino actually completes it. Only the alert is acknowledged.
 
     // 3. Log caregiver action in agent logs
     await db.createAgentActionLog({

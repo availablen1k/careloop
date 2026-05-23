@@ -182,7 +182,7 @@ export function mockGeminiCall<T>(system: string, prompt: string, schemaName: st
         action: 'create_task',
         priority: 'high',
         risk_level: 'high',
-        category: 'Social Contact',
+        category: 'Healthcare',
         title: title,
         description: emailBody || 'Appointment details in email.',
         due_time: dueTime,
