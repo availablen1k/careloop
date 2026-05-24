@@ -256,25 +256,6 @@ export default function SaaraDashboard() {
     }
   };
 
-  // Scenario quick triggers
-  const runScenarioSimulation = async (path: string, label: string) => {
-    setActionLoading(true);
-    try {
-      const res = await fetch(path, { method: 'POST' });
-      const json = await res.json();
-      if (json.ok) {
-        triggerToast(`Simulation triggered: ${label}`);
-        loadDashboard();
-      } else {
-        triggerToast(`Simulation error: ${json.error}`, 'error');
-      }
-    } catch {
-      triggerToast('Simulation execution failed.', 'error');
-    } finally {
-      setActionLoading(false);
-    }
-  };
-
   const handleCreateTaskSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!newTask.title || !newTask.due_time) {
@@ -399,51 +380,6 @@ export default function SaaraDashboard() {
 
             <div className="flex flex-col gap-3">
               <button
-                onClick={() => runScenarioSimulation('/api/demo/simulate-aino-completed', 'Aino completes medication')}
-                disabled={actionLoading}
-                className="w-full text-left px-3 py-2.5 rounded-lg border border-cream-300 text-xs font-semibold hover:bg-cream-100 transition-all bg-cream-50 flex items-center gap-2 text-slate-700"
-              >
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
-                <span>Aino takes tonsillitis meds</span>
-              </button>
-
-              <button
-                onClick={() => runScenarioSimulation('/api/demo/simulate-aino-no-answer', 'Call 1: No Answer')}
-                disabled={actionLoading}
-                className="w-full text-left px-3 py-2.5 rounded-lg border border-cream-300 text-xs font-semibold hover:bg-cream-100 transition-all bg-cream-50 flex items-center gap-2 text-slate-700"
-              >
-                <PhoneCall className="h-4 w-4 text-blue-600" />
-                <span>Call 1: Aino No Answer</span>
-              </button>
-
-              <button
-                onClick={() => runScenarioSimulation('/api/demo/simulate-second-no-answer', 'Call 2: No Answer & Escalate')}
-                disabled={actionLoading}
-                className="w-full text-left px-3 py-2.5 rounded-lg border border-cream-300 text-xs font-semibold hover:bg-cream-100 transition-all bg-cream-50 flex items-center gap-2 text-slate-700"
-              >
-                <AlertCircle className="h-4 w-4 text-red-600 animate-pulse" />
-                <span>Call 2: No Answer &amp; Escalate</span>
-              </button>
-
-              <button
-                onClick={() => runScenarioSimulation('/api/demo/simulate-aino-needs-help', 'Call 1: Needs Help')}
-                disabled={actionLoading}
-                className="w-full text-left px-3 py-2.5 rounded-lg border border-cream-300 text-xs font-semibold hover:bg-cream-100 transition-all bg-cream-50 flex items-center gap-2 text-slate-700"
-              >
-                <AlertTriangle className="h-4 w-4 text-amber-600" />
-                <span>Call 1: Aino Needs Help</span>
-              </button>
-
-              <button
-                onClick={() => runScenarioSimulation('/api/demo/run-full-escalation', 'Full Escalation Timeline')}
-                disabled={actionLoading}
-                className="w-full text-left px-3 py-2.5 rounded-lg border border-red-200 text-xs font-black text-red-700 hover:bg-red-50 transition-all bg-red-50/20 flex items-center gap-2"
-              >
-                <Activity className="h-4 w-4 text-rose-600 animate-pulse" />
-                <span>Generate Full Timeline Log</span>
-              </button>
-
-              <button
                 onClick={handleCheckOverdue}
                 disabled={actionLoading}
                 className="w-full text-center px-3 py-2 rounded-lg border border-emerald-600 text-xs font-bold text-emerald-700 hover:bg-emerald-50 transition-all flex items-center justify-center gap-1.5"
@@ -451,7 +387,6 @@ export default function SaaraDashboard() {
                 <Clock className="h-3.5 w-3.5" />
                 Run Overdue Checker
               </button>
-
             </div>
           </div>
 
