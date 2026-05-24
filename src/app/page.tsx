@@ -135,7 +135,7 @@ export default function LandingPage() {
 
       {/* Footer */}
       <footer className="bg-white border-t border-cream-300 py-8 text-center text-xs text-slate-500">
-        <p>© 2026 CareLoop. Hackathon Prototype. Built using Next.js &amp; Google Gemini.</p>
+        <p>© 2026 CareLoop. Hackathon Prototype.</p>
       </footer>
     </div>
   );
